@@ -1,24 +1,8 @@
-import subprocess
-import tempfile
+import subprocess,tempfile
 from pathlib import Path
-
-
-def scan(interface, seconds=15):
-    temp_dir = Path(tempfile.mkdtemp(prefix="easy-wifi-lab-"))
-    prefix = temp_dir / "scan"
-
-    command = [
-        "sudo", "timeout", str(seconds),
-        "airodump-ng",
-        "--write", str(prefix),
-        "--output-format", "csv",
-        interface,
-    ]
-
-    subprocess.run(command, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
-
-    matches = sorted(temp_dir.glob("scan*.csv"))
-    if not matches:
-        raise RuntimeError("airodump-ng did not produce a CSV file.")
-
-    return matches[0]
+def scan(interface,duration=15):
+    with tempfile.TemporaryDirectory(prefix='easy_wifi_lab_') as d:
+        p=str(Path(d)/'scan'); subprocess.run(['sudo','timeout',str(duration),'airodump-ng','--write-interval','1','--output-format','csv','--write',p,interface],check=False)
+        src=Path(p+'-01.csv')
+        if not src.exists(): raise RuntimeError('airodump-ng did not produce a CSV scan file.')
+        dst=Path.cwd()/'.easy_wifi_lab_scan.csv'; dst.write_bytes(src.read_bytes()); return dst

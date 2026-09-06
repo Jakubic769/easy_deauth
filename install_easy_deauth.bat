@@ -1,32 +1,35 @@
 @echo off
 setlocal
-
-echo ==========================================
-echo        Easy WiFi Lab Installer
-echo ==========================================
+title Easy WiFi Lab - Installer
+for /f "tokens=2 delims==" %%A in ('"wmic os get LocalDateTime /value" 2^>nul') do set "DT=%%A"
+set "C=[36m"
+set "G=[32m"
+set "R=[31m"
+set "D=[90m"
+set "X=[0m"
+set "B=[1m"
+cls
 echo.
-
+echo %C%%B%   ███████╗ █████╗ ███████╗██╗   ██╗
+echo   ██╔════╝██╔══██╗██╔════╝╚██╗ ██╔╝
+echo   █████╗  ███████║███████╗ ╚████╔╝
+echo   ██╔══╝  ██╔══██║╚════██║  ╚██╔╝
+echo   ██║     ██║  ██║███████║   ██║
+echo   ╚═╝     ╚═╝  ╚═╝╚══════╝   ╚═╝%X%
+echo.
+echo   %B%Easy WiFi Lab%X% %D%• WSL installer%X%
+echo   %D%────────────────────────────────────────────────────────────%X%
+echo.
 where wsl.exe >nul 2>&1
 if errorlevel 1 (
-    echo WSL is not installed.
-    echo Install it from an elevated PowerShell with:
-    echo.
-    echo     wsl --install
-    echo.
-    pause
-    exit /b 1
+  echo   %R%[ERROR]%X% WSL is not installed.
+  echo.
+  pause
+  exit /b 1
 )
-
-echo Launching the Linux installer inside WSL...
-echo NOTE: Wi-Fi monitor mode requires a compatible Wi-Fi adapter
-echo       exposed to the Linux environment.
+echo   %C%[INFO]%X% WSL detected.
+echo   %G%[OK]%X% Windows launcher is ready.
 echo.
-
-wsl.exe bash -lc "mkdir -p /tmp/easy_deauth_install && echo 'Copy the project ZIP contents into WSL, then run install_easy_deauth.sh.'"
-
-echo.
-echo The BAT bootstrap is ready.
-echo For native Linux, run:
-echo     bash install_easy_deauth.sh
+echo   %D%Run install_easy_deauth.sh inside your WSL project directory.%X%
 echo.
 pause

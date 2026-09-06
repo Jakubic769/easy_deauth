@@ -1,14 +1,5 @@
 from dataclasses import dataclass
-
 @dataclass
-class AccessPoint:
-    bssid: str
-    channel: str
-    signal: str
-    essid: str
-
+class AccessPoint: bssid:str; channel:str; signal:str; essid:str
 @dataclass
-class Station:
-    mac: str
-    bssid: str
-    signal: str
+class Station: mac:str; bssid:str; signal:str
