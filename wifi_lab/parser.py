@@ -1,47 +1,17 @@
 import csv
-from .models import AccessPoint, Station
-
-
-def normalize_mac(value):
-    return value.strip().upper()
-
-
-def parse_airodump_csv(filename):
-    access_points = []
-    stations = []
-
-    with open(filename, newline="", encoding="utf-8", errors="ignore") as f:
-        rows = list(csv.reader(f))
-
-    section = None
-
-    for row in rows:
-        if not row:
-            continue
-
-        first = row[0].strip()
-
-        if first == "BSSID":
-            section = "ap"
-            continue
-
-        if first == "Station MAC":
-            section = "station"
-            continue
-
-        if section == "ap" and len(row) >= 14:
-            access_points.append(AccessPoint(
-                bssid=normalize_mac(row[0]),
-                channel=row[3].strip(),
-                signal=row[8].strip(),
-                essid=row[13].strip(),
-            ))
-
-        elif section == "station" and len(row) >= 6:
-            stations.append(Station(
-                mac=normalize_mac(row[0]),
-                bssid=normalize_mac(row[5]),
-                signal=row[3].strip(),
-            ))
-
-    return access_points, stations
+from .models import AccessPoint,Station
+def parse_scan(path):
+    rows=list(csv.reader(open(path,encoding='utf-8',errors='replace',newline=''))); ai=si=None
+    for i,r in enumerate(rows):
+        if r and r[0].strip()=='BSSID': ai=i
+        elif r and r[0].strip()=='Station MAC': si=i
+    aps=[]; sts=[]
+    if ai is not None:
+        for r in rows[ai+1:]:
+            if len(r)<14 or not r[0].strip(): continue
+            aps.append(AccessPoint(r[0].strip(),r[3].strip(),r[8].strip(),r[13].strip()))
+    if si is not None:
+        for r in rows[si+1:]:
+            if len(r)<6 or not r[0].strip(): continue
+            sts.append(Station(r[0].strip(),r[5].strip(),r[3].strip()))
+    return aps,sts

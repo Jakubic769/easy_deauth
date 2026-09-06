@@ -1,33 +1,15 @@
 import subprocess
-
-
-def run_command(command):
-    result = subprocess.run(
-        command,
-        text=True,
-        capture_output=True,
-        check=True,
-    )
-    return result.stdout
-
-
-def list_wifi_interfaces():
-    output = run_command(["iw", "dev"])
-    return [
-        line.strip().split()[1]
-        for line in output.splitlines()
-        if line.strip().startswith("Interface ")
-    ]
-
-
-def enable_monitor_mode(interface):
-    run_command(["sudo", "ip", "link", "set", interface, "down"])
-    run_command(["sudo", "iw", "dev", interface, "set", "type", "monitor"])
-    run_command(["sudo", "ip", "link", "set", interface, "up"])
-    return interface
-
-
-def restore_managed_mode(interface):
-    run_command(["sudo", "ip", "link", "set", interface, "down"])
-    run_command(["sudo", "iw", "dev", interface, "set", "type", "managed"])
-    run_command(["sudo", "ip", "link", "set", interface, "up"])
+from dataclasses import dataclass
+@dataclass
+class WirelessInterface: name:str; mode:str
+def list_wireless_interfaces():
+    r=subprocess.run(['iw','dev'],capture_output=True,text=True,check=True); out=[]; cur=None
+    for line in r.stdout.splitlines():
+        s=line.strip()
+        if s.startswith('Interface '): cur=s.split(None,1)[1]; out.append(WirelessInterface(cur,'unknown'))
+        elif cur and s.startswith('type '): out[-1].mode=s.split(None,1)[1]
+    return out
+def set_monitor_mode(i):
+    subprocess.run(['sudo','ip','link','set',i,'down'],check=True); subprocess.run(['sudo','iw','dev',i,'set','type','monitor'],check=True); subprocess.run(['sudo','ip','link','set',i,'up'],check=True); return i
+def set_managed_mode(i):
+    subprocess.run(['sudo','ip','link','set',i,'down'],check=True); subprocess.run(['sudo','iw','dev',i,'set','type','managed'],check=True); subprocess.run(['sudo','ip','link','set',i,'up'],check=True)
