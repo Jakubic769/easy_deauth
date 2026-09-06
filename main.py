@@ -80,19 +80,12 @@ def main():
 
         show_aps(aps, lab)
 
-        allowed_aps = [ap for ap in aps if lab.is_allowed_ap(ap)]
-        if not allowed_aps:
-            console.print(
-                Panel(
-                    "No detected AP matches config.json::allowed_bssids.",
-                    title="Lab validation",
-                    border_style="yellow",
-                )
-            )
-            return
-
-        selected_ap = choose(allowed_aps, "Allowed lab APs", "Select your lab AP")
-
+        selected_ap = choose(
+            aps,
+            "Detected access points",
+            "Select your AP",
+)
+        
         target_stations = [
             s for s in stations
             if s.bssid.upper() == selected_ap.bssid.upper()
