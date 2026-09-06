@@ -1,5 +1,6 @@
 #!/usr/bin/env bash
 set -euo pipefail
+
 APP="Easy WiFi Lab"
 INSTALL_DIR="${HOME}/easy_deauth"
 VENV="${INSTALL_DIR}/.venv"
@@ -38,7 +39,7 @@ case "${ID:-}" in
     ok "System dependencies ready"
     ;;
   *)
-    warn "Unsupported distro. Make sure python3, venv, iw and aircrack-ng are installed."
+    warn "Unsupported distro; ensure python3, venv, iw and aircrack-ng are installed."
     ;;
 esac
 
@@ -53,7 +54,7 @@ cp -a "$HERE/main.py" "$HERE/wifi_lab" "$HERE/requirements.txt" "$INSTALL_DIR/"
 [[ -f "$HERE/README.md" ]] && cp -a "$HERE/README.md" "$INSTALL_DIR/"
 ok "Project files copied"
 
-info "Creating Python virtual environment..."
+info "Creating Python environment..."
 python3 -m venv "$VENV"
 "$VENV/bin/python" -m pip install --upgrade pip -q
 "$VENV/bin/pip" install -r "$INSTALL_DIR/requirements.txt" -q
@@ -65,7 +66,7 @@ sudo tee /usr/local/bin/easy_deauth >/dev/null <<EOF
 exec "$VENV/bin/python" "$INSTALL_DIR/main.py" "\$@"
 EOF
 sudo chmod +x /usr/local/bin/easy_deauth
-ok "Launcher available as: easy_deauth"
+ok "Launcher: easy_deauth"
 
 printf "\n   ${G}${B}Installation complete.${X}\n"
 printf "   ${D}Run:${X} ${C}easy_deauth${X}\n\n"
