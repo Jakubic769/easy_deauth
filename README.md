@@ -4,6 +4,8 @@
 
 ![Python](https://img.shields.io/badge/Python-3.10%2B-blue?logo=python)
 ![Linux](https://img.shields.io/badge/Linux-iw%20%2B%20Aircrack--ng-black?logo=linux)
+
+# Status
 ![Status](https://img.shields.io/badge/status-failed-red?style=for-the-badge)
 
 ## Features
